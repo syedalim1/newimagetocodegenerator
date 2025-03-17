@@ -7,13 +7,11 @@ import {
   X,
   Sparkles,
   Home,
-  CircleDollarSign,
-  PenTool,
   Image,
   Cpu,
   Menu,
   ChevronRight,
-  Bell,
+ 
   Settings,
   Star,
   Crown,
@@ -469,16 +467,7 @@ function AppHeader() {
                 variant="ghost"
                 className="rounded-full p-2 relative hover:bg-white/50 hover:shadow-sm"
               >
-                <Bell className="h-5 w-5 text-gray-700" />
-                {notificationCount > 0 && (
-                  <motion.div
-                    variants={pulseAnimation}
-                    animate="pulse"
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-red-500 to-pink-600 rounded-full text-white text-xs flex items-center justify-center shadow-md shadow-red-300/30"
-                  >
-                    {notificationCount}
-                  </motion.div>
-                )}
+               
               </Button>
             </motion.div>
 

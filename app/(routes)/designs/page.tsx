@@ -15,6 +15,8 @@ import {
   RefreshCw,
   Filter,
   X,
+  Delete,
+  Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -22,6 +24,7 @@ import { useRouter } from "next/navigation";
 import LoadingState from "./_component/LoadingState";
 import ErrorState from "./_component/ErrorState";
 import EmptyState from "./_component/EmptyState";
+import { Button } from "@/components/ui/button";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#0088FE"];
 
@@ -39,6 +42,7 @@ interface Design {
 
 interface DesignsGridProps {
   designs: Design[];
+  onDelete: (uid: string) => Promise<void>;
 }
 
 interface DesignsListProps {
@@ -152,16 +156,17 @@ function DesignsPage() {
         } else {
           const validDesigns = result
             .filter((design): design is Design => {
-              if (!design.code || typeof design.code !== 'object') return false;
+              if (!design.code || typeof design.code !== "object") return false;
               const code = design.code as { content?: string };
-              return typeof code.content === 'string';
+              return typeof code.content === "string";
             })
-            .map(design => ({
+            .map((design) => ({
               ...design,
-              code: typeof design.code === 'string' 
-                ? { content: design.code }
-                : design.code as { content: string },
-              options: Array.isArray(design.options) ? design.options : []
+              code:
+                typeof design.code === "string"
+                  ? { content: design.code }
+                  : (design.code as { content: string }),
+              options: Array.isArray(design.options) ? design.options : [],
             }));
           setDesigns(validDesigns);
         }
@@ -213,7 +218,9 @@ function DesignsPage() {
       const dateA = parseDate(a.createdAt);
       const dateB = parseDate(b.createdAt);
       if (!dateA || !dateB) return 0;
-      return sortOrder === "asc" ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+      return sortOrder === "asc"
+        ? dateA.getTime() - dateB.getTime()
+        : dateB.getTime() - dateA.getTime();
     });
 
   // Prepare data for charts
@@ -233,10 +240,27 @@ function DesignsPage() {
         name: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.getDay()],
         count: designs.filter((design) => {
           const designDate = parseDate(design.createdAt);
-          return designDate && designDate.toISOString().split("T")[0] === dateStr;
+          return (
+            designDate && designDate.toISOString().split("T")[0] === dateStr
+          );
         }).length,
       };
     });
+
+  const handleDelete = async (uid: string) => {
+    try {
+      // Delete the design from the database
+      await db.delete(imagetocodeTable).where(eq(imagetocodeTable.uid, uid));
+
+      // Update the local state to remove the deleted design
+      setDesigns((prevDesigns) =>
+        prevDesigns.filter((design) => design.uid !== uid)
+      );
+    } catch (error) {
+      console.error("Error deleting design:", error);
+      setError("Failed to delete design. Please try again.");
+    }
+  };
 
   if (!isClient) {
     return null; // Prevent flash of content during hydration
@@ -410,12 +434,15 @@ function DesignsPage() {
           {filteredAndSortedDesigns.length === 0 ? (
             <EmptyState hasSearchOrFilter={!!(searchTerm || filterModel)} />
           ) : viewMode === "grid" ? (
-            <DesignsGrid designs={filteredAndSortedDesigns} />
+            <DesignsGrid
+              designs={filteredAndSortedDesigns}
+              onDelete={handleDelete}
+            />
           ) : (
             <DesignsList designs={filteredAndSortedDesigns} />
           )}
         </SignedIn>
-        
+
         <SignedOut>
           {/* Content only visible to signed out users */}
           <motion.div
@@ -428,13 +455,12 @@ function DesignsPage() {
               Your Designs Collection
             </h1>
             <p className="text-gray-600 mb-8 max-w-md">
-              Please sign in to view your design collection and conversion history.
+              Please sign in to view your design collection and conversion
+              history.
             </p>
-            
+
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
-              <SignInButton mode="modal">
-                Sign In to View Designs
-              </SignInButton>
+              <SignInButton mode="modal">Sign In to View Designs</SignInButton>
             </div>
           </motion.div>
         </SignedOut>
@@ -443,10 +469,10 @@ function DesignsPage() {
   );
 }
 
-function DesignsGrid({ designs }: DesignsGridProps) {
+function DesignsGrid({ designs, onDelete }: DesignsGridProps) {
   const router = useRouter();
   const handleDesignClick = (uid: string) => {
-    router.push(`/view-code/${uid}`);
+    router.push(`/designs/${uid}`);
   };
 
   return (
@@ -483,17 +509,30 @@ function DesignsGrid({ designs }: DesignsGridProps) {
                   ? new Date(design.createdAt).toLocaleDateString()
                   : "Unknown date"}
               </span>
+
               <div className="flex space-x-1">
                 {design.options &&
-                  design.options.slice(0, 3).map((option, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-block w-2 h-2 rounded-full"
-                      style={{ backgroundColor: COLORS[idx % COLORS.length] }}
-                    ></span>
-                  ))}
+                  design.options
+                    .slice(0, 3)
+                    .map((option, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-block w-2 h-2 rounded-full"
+                        style={{ backgroundColor: COLORS[idx % COLORS.length] }}
+                      ></span>
+                    ))}
               </div>
             </div>
+            <Button
+              className="w-full mt-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded-md shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(design.uid);
+              }}
+            >
+              <span>Delete Design</span>
+              <Trash2 className="w-5 h-5 animate-pulse" />
+            </Button>
           </div>
         </motion.div>
       ))}
@@ -504,7 +543,7 @@ function DesignsGrid({ designs }: DesignsGridProps) {
 function DesignsList({ designs }: DesignsListProps) {
   const router = useRouter();
   const handleDesignClick = (uid: string) => {
-    router.push(`/view-code/${uid}`);
+    router.push(`/designs/${uid}`);
   };
 
   return (
