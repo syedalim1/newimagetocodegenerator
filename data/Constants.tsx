@@ -121,129 +121,12 @@ export default {
     7. Well-documented props and component interfaces
 
     ### Example of High-Quality Output:
-    \`\`\`javascript
-    import React, { useState, useEffect } from 'react';
-    import { Sun, Moon, Menu, X, ChevronDown, Search, Bell, User } from 'lucide-react';
-
-    const DashboardHeader = ({ title }) => {
-      return (
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{title}</h1>
-          <div className="flex items-center space-x-2">
-            <NotificationBell />
-            <UserProfile />
-          </div>
-        </div>
-      );
-    };
-
-    const NotificationBell = () => {
-      const [hasNotifications, setHasNotifications] = useState(true);
-      
-      return (
-        <button 
-          className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          aria-label="Notifications"
-        >
-          <Bell className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-          {hasNotifications && (
-            <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
-          )}
-        </button>
-      );
-    };
-
-    const UserProfile = () => {
-      const [isOpen, setIsOpen] = useState(false);
-      
-      return (
-        <div className="relative">
-          <button 
-            className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-expanded={isOpen}
-            aria-haspopup="true"
-          >
-            <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-              <User className="h-4 w-4" />
-            </div>
-            <ChevronDown className="h-4 w-4 text-gray-600 dark:text-gray-300" />
-          </button>
-          
-          {isOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700">
-              <a href="#profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
-              <a href="#settings" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Settings</a>
-              <a href="#logout" className="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700">Logout</a>
-            </div>
-          )}
-        </div>
-      );
-    };
-
+    
+    
     const App = () => {
-      const [darkMode, setDarkMode] = useState(false);
-      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-      
-      useEffect(() => {
-        // Apply dark mode class to document
-        if (darkMode) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      }, [darkMode]);
-      
-      return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
-          {/* Header */}
-          <header className="bg-white dark:bg-gray-800 shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between h-16">
-                <div className="flex items-center">
-                  <a href="#" className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                    Dashboard
-                  </a>
-                </div>
-                
-                <div className="hidden md:flex items-center space-x-4">
-                  <button
-                    onClick={() => setDarkMode(!darkMode)}
-                    className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-                    aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                  >
-                    {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                  </button>
-                </div>
-                
-                <div className="md:hidden flex items-center">
-                  <button
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="p-2 rounded-lg text-gray-600 dark:text-gray-300"
-                    aria-expanded={isMobileMenuOpen}
-                    aria-label="Toggle menu"
-                  >
-                    {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </header>
-          
-          {/* Main content */}
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <DashboardHeader title="Welcome Back, User" />
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Dashboard cards would go here */}
-            </div>
-          </main>
-        </div>
-      );
-    };
-
+    // Code here
     export default App;
-    \`\`\`
+    
   `,
 
   AiModel: [
@@ -258,9 +141,9 @@ export default {
     EXPERT_MODE: 40,
     PRICING_PLANS: [
       { price: 20, credits: 10 },
-      { price: 50, credits: 30, originalPrice: 60},
-      { price: 140, credits: 90, originalPrice: 180},
-      { price: 400, credits: 250, originalPrice: 500  },
+      { price: 50, credits: 30, originalPrice: 60 },
+      { price: 140, credits: 90, originalPrice: 180 },
+      { price: 400, credits: 250, originalPrice: 500 },
     ],
   },
 };

@@ -45,7 +45,7 @@ function Provider({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AuthContextProvider>
-        <LazyMotion features={domAnimation}>
+    
           <div className="flex min-h-screen max-h-screen w-full overflow-hidden">
             {/* Main content area */}
             <div className="flex flex-col flex-1 w-full overflow-hidden">
@@ -79,7 +79,7 @@ function Provider({ children }: Readonly<{ children: React.ReactNode }>) {
               </motion.main>
             </div>
           </div>
-        </LazyMotion>
+        
       </AuthContextProvider>
     </ErrorBoundary>
   );

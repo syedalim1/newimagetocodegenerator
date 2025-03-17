@@ -4,7 +4,9 @@ import { db } from "@/configs/db";
 import { imagetocodeTable } from "@/configs/schema";
 import { eq, desc } from "drizzle-orm";
 import { useUser, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify";
+import confetti from "canvas-confetti";
 
 import {
   Search,
@@ -256,9 +258,58 @@ function DesignsPage() {
       setDesigns((prevDesigns) =>
         prevDesigns.filter((design) => design.uid !== uid)
       );
+
+      // Trigger confetti animation
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#ff0000", "#ff6b6b", "#ffd93d"],
+        shapes: ["circle", "square"],
+        scalar: 0.8,
+        ticks: 200,
+        gravity: 0.5,
+        drift: 0,
+      });
+
+      // Show success toast with custom styling
+      toast.success("Design deleted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          background: "linear-gradient(to right, #ff6b6b, #ff8e8e)",
+          color: "white",
+          borderRadius: "8px",
+          padding: "12px 24px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        },
+      });
     } catch (error) {
       console.error("Error deleting design:", error);
       setError("Failed to delete design. Please try again.");
+
+      // Show error toast with custom styling
+      toast.error("Failed to delete design", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          background: "linear-gradient(to right, #ff4444, #ff6b6b)",
+          color: "white",
+          borderRadius: "8px",
+          padding: "12px 24px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        },
+      });
     }
   };
 
@@ -471,8 +522,44 @@ function DesignsPage() {
 
 function DesignsGrid({ designs, onDelete }: DesignsGridProps) {
   const router = useRouter();
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
   const handleDesignClick = (uid: string) => {
     router.push(`/designs/${uid}`);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent, uid: string) => {
+    e.stopPropagation();
+    setDeleteConfirm(uid);
+  };
+
+  const confirmDelete = (uid: string) => {
+    onDelete(uid)
+      .then(() => {
+        toast.success("Design deleted successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .catch(() => {
+        toast.error("Failed to delete design", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .finally(() => {
+        setDeleteConfirm(null);
+      });
   };
 
   return (
@@ -480,9 +567,12 @@ function DesignsGrid({ designs, onDelete }: DesignsGridProps) {
       {designs.map((design) => (
         <motion.div
           key={design.uid}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: -20 }}
           whileHover={{ y: -5, scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+          className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer relative"
           onClick={() => handleDesignClick(design.uid)}
         >
           <div className="relative aspect-video bg-gray-100">
@@ -524,16 +614,59 @@ function DesignsGrid({ designs, onDelete }: DesignsGridProps) {
               </div>
             </div>
             <Button
-              className="w-full mt-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded-md shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(design.uid);
-              }}
+              className="w-full mt-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded-md shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 group"
+              onClick={(e) => handleDeleteClick(e, design.uid)}
             >
               <span>Delete Design</span>
-              <Trash2 className="w-5 h-5 animate-pulse" />
+              <Trash2 className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
             </Button>
           </div>
+
+          <AnimatePresence>
+            {deleteConfirm === design.uid && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
+                >
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Trash2 className="w-8 h-8 text-red-500 animate-bounce" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      Delete Design?
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      Are you sure you want to delete this design? This action
+                      cannot be undone.
+                    </p>
+                    <div className="flex justify-center gap-4">
+                      <Button
+                        onClick={() => setDeleteConfirm(null)}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-800"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => confirmDelete(design.uid)}
+                        className="bg-red-500 hover:bg-red-600 text-white"
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       ))}
     </div>

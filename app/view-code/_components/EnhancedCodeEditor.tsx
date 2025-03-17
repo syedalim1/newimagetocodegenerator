@@ -38,9 +38,11 @@ interface CodeContent {
 function CodeEditorWithCapture({
   setCode,
   readOnly = false,
+  style,
 }: {
   setCode: (code: string) => void;
   readOnly?: boolean;
+  style?: React.CSSProperties;
 }) {
   const { code, updateCode } = useActiveCode();
 
@@ -54,6 +56,7 @@ function CodeEditorWithCapture({
       style={{
         minWidth: "100%",
         height: "600px",
+        ...style,
       }}
       showLineNumbers
       showTabs
@@ -92,7 +95,7 @@ const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
   const [currentCode, setCurrentCode] = useState(code);
   const [processedCode, setProcessedCode] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
+
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -159,20 +162,11 @@ const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
     if (onCodeChange) {
       onCodeChange(newCode);
     }
-};
-
-  // Clipboard operations should only run on client
-  const copyToClipboard = () => {
-    if (typeof navigator !== 'undefined') {
-      navigator.clipboard.writeText(currentCode);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    }
   };
 
   // Download operation should only run on client
   const downloadCode = () => {
-    if (typeof document !== 'undefined') {
+    if (typeof document !== "undefined") {
       const element = document.createElement("a");
       const file = new Blob([currentCode], { type: "text/javascript" });
       element.href = URL.createObjectURL(file);
@@ -281,40 +275,6 @@ export default function ErrorFallback() {
         </div>
 
         <div className="flex space-x-2 mt-2 sm:mt-0">
-          <ClientOnly>
-            <motion.button
-              onClick={copyToClipboard}
-              className="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md flex items-center text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              disabled={isCopied}
-            >
-              {isCopied ? (
-                <>
-                  <Check className="h-4 w-4 mr-1.5 text-green-500" />
-                  <span className="text-green-500">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4 mr-1.5" />
-                  <span>Copy</span>
-                </>
-              )}
-            </motion.button>
-          </ClientOnly>
-
-          <ClientOnly>
-            <motion.button
-              onClick={downloadCode}
-              className="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md flex items-center text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Download className="h-4 w-4 mr-1.5" />
-              <span>Download</span>
-            </motion.button>
-          </ClientOnly>
-
           <motion.button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="p-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md flex items-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
@@ -385,7 +345,7 @@ export default function ErrorFallback() {
             }}
             customSetup={{
               dependencies: {
-                "react": "^18.0.0",
+                react: "^18.0.0",
                 "react-dom": "^18.0.0",
                 "react-markdown": "latest",
                 "lucide-react": "latest",
@@ -430,12 +390,19 @@ try {
             <SandpackLayout
               style={{
                 width: "100%",
-                height: activeTab === "preview" ? "700px" : "800px",
+                height: "800px",
                 borderRadius: "0",
               }}
             >
               {activeTab === "code" && (
                 <CodeEditorWithCapture
+                  style={{
+                    height: "100%",
+                    minWidth: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: "auto",
+                  }}
                   setCode={handleCodeChange}
                   readOnly={false}
                 />
@@ -458,6 +425,9 @@ try {
                   style={{
                     height: "100%",
                     minWidth: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: "auto",
                   }}
                 />
               )}

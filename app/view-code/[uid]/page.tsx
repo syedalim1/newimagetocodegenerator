@@ -615,18 +615,7 @@ const Page: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Footer */}
-        <motion.div
-          className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400 pb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          <p>Powered by advanced AI models to transform designs into code.</p>
-          <p className="mt-1">
-            © <ClientDate date={new Date()} format="year" fallback={new Date().getFullYear().toString()} /> ImageToCode. All rights reserved.
-          </p>
-        </motion.div>
+       
       </div>
 
       {/* Add CSS for background pattern */}
