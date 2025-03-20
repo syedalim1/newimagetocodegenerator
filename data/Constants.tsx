@@ -1,7 +1,7 @@
 import dedent from "dedent";
 
 export default {
-  PROMPT: dedent`
+  PROMPTFORNEXTJS: dedent`
     You are an expert frontend React developer and UI/UX designer with years of production experience. Your task is to generate a fully functional, error-free React component using Tailwind CSS based on the provided wireframe image or description. Follow these instructions meticulously:
 
     ### Instructions:
@@ -145,5 +145,32 @@ export default {
       { price: 140, credits: 90, originalPrice: 180 },
       { price: 400, credits: 250, originalPrice: 500 },
     ],
-  },
+    },
+   ERROR_PREVENTION_PROMPTFORNEXTJS : `
+IMPORTANT: Your generated code must be free of syntax errors. Pay special attention to:
+1. All string literals must be properly terminated with matching quotes
+2. All JSX elements must be properly closed
+3. All curly braces, parentheses, and brackets must be properly balanced
+4. All className attributes must have properly formatted values
+5. All React components must have proper import and export statements
+6. Ensure all variable names are properly defined before use
+7. Double-check all template literals for proper syntax
+8. Return ONLY the code, not explanations or markdown formatting
+`,
+
+ERROR_PREVENTION_PROMPTFORREACT : `
+IMPORTANT: Your generated code must be free of syntax errors. Pay special attention to:
+1. All string literals must be properly terminated with matching quotes
+2. All JSX elements must be properly closed
+3. All curly braces, parentheses, and brackets must be properly balanced
+4. All className attributes must have properly formatted values
+5. All React components must have proper import and export statements
+6. Ensure all variable names are properly defined before use
+7. Double-check all template literals for proper syntax
+8. Return ONLY the code, not explanations or markdown formatting
+`,
+
+PROMPTFORREACT: dedent`
+ 
+`,
 };

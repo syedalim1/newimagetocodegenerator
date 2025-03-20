@@ -194,7 +194,7 @@ const Page: React.FC = () => {
         body: JSON.stringify({
           description: record.description,
           imageUrl: record.imageUrl,
-          model: record.model,
+          language: record.Language,
           options: record.options,
           userEmail: user?.primaryEmailAddress?.emailAddress || "",
         }),

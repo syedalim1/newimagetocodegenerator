@@ -28,7 +28,6 @@ function AppHeader() {
   const [hoveredNavItem, setHoveredNavItem] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [logoHovered, setLogoHovered] = useState(false);
 
   const logoControls = useAnimation();
@@ -77,15 +76,7 @@ function AppHeader() {
     return () => clearInterval(interval);
   }, []);
 
-  // More elaborate confetti effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 4000);
-    }, 15000);
-
-    return () => clearInterval(interval);
-  }, []);
+ 
 
   // Close sidebar when clicking outside on mobile
   useEffect(() => {
@@ -116,73 +107,9 @@ function AppHeader() {
     }
   }, [logoHovered, logoControls]);
 
-  // Enhanced animation variants
-  const pulseAnimation = {
-    pulse: {
-      scale: [1, 1.2, 1],
-      transition: {
-        duration: 0.5,
-        repeat: Infinity,
-        repeatType: "loop" as const,
-      },
-    },
-  };
 
-  const zapAnimation = {
-    pulse: {
-      scale: [1, 1.2, 1],
-      rotate: [0, 10, 0],
-      filter: ["blur(0)", "blur(2px)", "blur(0)"],
-      transition: {
-        duration: 0.5,
-        repeat: Infinity,
-        repeatType: "loop" as const,
-      },
-    },
-  };
 
-  const saveAnimation = {
-    success: {
-      scale: [1, 1.2, 1],
-      rotate: [0, 15, 0],
-      transition: {
-        duration: 0.7,
-      },
-    },
-  };
-
-  const floatAnimation = {
-    float: {
-      y: [0, -8, 0],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        repeatType: "loop" as const,
-      },
-    },
-  };
-
-  const shimmerAnimation = {
-    shimmer: {
-      x: ["0%", "100%"],
-      transition: {
-        repeat: Infinity,
-        duration: 2,
-        ease: "easeInOut",
-      },
-    },
-  };
-
-  const bounceAnimation = {
-    bounce: {
-      y: [0, -10, 0],
-      transition: {
-        duration: 0.8,
-        repeat: Infinity,
-        repeatType: "loop",
-      },
-    },
-  };
+ 
 
   // Enhanced sidebar animations
   const sidebarVariants = {
@@ -412,7 +339,7 @@ function AppHeader() {
                   </motion.div>
                 </div>
                 <div className="absolute -inset-1 bg-purple-400/30 rounded-full blur-xl -z-10"></div>
-                <div className="absolute -inset-3 bg-blue-400/20 rounded-full blur-2xl -z-10 animate-pulse"></div>
+                <div className="absolute -inset-3 bg-blue-400/20 rounded-full blur-2xl -z-10"></div>
               </Link>
             </motion.div>
           </div>
@@ -601,88 +528,7 @@ function AppHeader() {
         )}
       </AnimatePresence>
 
-      {/* Enhanced floating graphics elements */}
-      <AnimatePresence>
-        {showSparkles && (
-          <>
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={`sparkle-${i}`}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: [0, 1, 0], scale: [0, 1, 0.5] }}
-                exit={{ opacity: 0, scale: 0 }}
-                transition={{
-                  duration: 2,
-                  delay: i * 0.3,
-                  ease: "easeInOut",
-                }}
-                className="fixed z-30 pointer-events-none"
-                style={{
-                  top: `${20 + Math.random() * 50}px`,
-                  right: `${40 + Math.random() * 100}px`,
-                }}
-              >
-                <motion.div
-                  variants={floatAnimation}
-                  animate="float"
-                  className="text-purple-500"
-                >
-                  <Sparkles className={`h-${4 + i * 2} w-${4 + i * 2}`} />
-                </motion.div>
-              </motion.div>
-            ))}
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Enhanced confetti effect with better distribution and colors */}
-      <AnimatePresence>
-        {showConfetti && (
-          <>
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={`confetti-${i}`}
-                initial={{
-                  opacity: 1,
-                  y: -20,
-                  x: Math.random() * window.innerWidth,
-                }}
-                animate={{
-                  opacity: [1, 1, 0],
-                  y: window.innerHeight * 0.8,
-                  x: Math.random() * window.innerWidth,
-                  rotate: Math.random() * 360,
-                }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 4,
-                  ease: "easeOut",
-                  delay: Math.random() * 3,
-                }}
-                className="fixed top-0 z-20 pointer-events-none"
-                style={{
-                  width: Math.random() * 10 + 5 + "px",
-                  height: Math.random() * 15 + 5 + "px",
-                  backgroundColor: [
-                    `rgba(239, 68, 68, ${0.7 + Math.random() * 0.3})`, // red
-                    `rgba(59, 130, 246, ${0.7 + Math.random() * 0.3})`, // blue
-                    `rgba(250, 204, 21, ${0.7 + Math.random() * 0.3})`, // yellow
-                    `rgba(16, 185, 129, ${0.7 + Math.random() * 0.3})`, // green
-                    `rgba(168, 85, 247, ${0.7 + Math.random() * 0.3})`, // purple
-                    `rgba(236, 72, 153, ${0.7 + Math.random() * 0.3})`, // pink
-                  ][Math.floor(Math.random() * 6)],
-                  borderRadius:
-                    Math.random() > 0.5 ? "50%" : `${Math.random() * 5}px`,
-                  boxShadow: `0 0 ${
-                    Math.random() * 10
-                  }px rgba(255,255,255,0.3)`,
-                }}
-              />
-            ))}
-          </>
-        )}
-      </AnimatePresence>
-
+   
       {/* Enhanced feature spotlight with animated glow effect */}
       <motion.div
         initial={{ opacity: 0, y: 100 }}
@@ -717,7 +563,7 @@ function AppHeader() {
 
           {/* Animated glow effect */}
           <div className="absolute -inset-1 bg-purple-400/30 rounded-full blur-xl -z-10 group-hover:bg-purple-400/40 transition-colors"></div>
-          <div className="absolute -inset-2 bg-violet-400/20 rounded-full blur-2xl -z-10 animate-pulse"></div>
+          <div className="absolute -inset-2 bg-violet-400/20 rounded-full blur-2xl -z-10"></div>
         </motion.div>
       </motion.div>
     </>

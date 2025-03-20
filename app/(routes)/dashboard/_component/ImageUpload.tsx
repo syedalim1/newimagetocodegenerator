@@ -686,9 +686,9 @@ const ImageUpload = () => {
           >
             <div className="flex flex-col items-center text-center">
               <div className="relative w-20 h-20 mb-6">
-                <div className="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <div className="absolute inset-2 border-4 border-purple-500 border-b-transparent rounded-full animate-spin animation-delay-150"></div>
-                <div className="absolute inset-4 border-4 border-teal-500 border-l-transparent rounded-full animate-spin animation-delay-300"></div>
+                <div className="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+                <div className="absolute inset-2 border-4 border-purple-500 border-b-transparent rounded-full"></div>
+                <div className="absolute inset-4 border-4 border-teal-500 border-l-transparent rounded-full"></div>
               </div>
 
               <h3

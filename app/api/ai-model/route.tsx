@@ -12,21 +12,10 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const SITE_NAME = process.env.SITE_NAME || "My Local App";
 
 // Additional instructions to prevent common syntax errors
-const ERROR_PREVENTION_PROMPT = `
-IMPORTANT: Your generated code must be free of syntax errors. Pay special attention to:
-1. All string literals must be properly terminated with matching quotes
-2. All JSX elements must be properly closed
-3. All curly braces, parentheses, and brackets must be properly balanced
-4. All className attributes must have properly formatted values
-5. All React components must have proper import and export statements
-6. Ensure all variable names are properly defined before use
-7. Double-check all template literals for proper syntax
-8. Return ONLY the code, not explanations or markdown formatting
-`;
 
 export async function POST(req: NextRequest) {
   try {
-    const { description, imageUrl, model, options, userEmail } =
+    const { description, imageUrl, options, userEmail,language } =
       await req.json();
 
     // Validate required fields
@@ -43,13 +32,22 @@ export async function POST(req: NextRequest) {
     const modelname = "google/gemini-2.0-flash-lite-preview-02-05:free";
 
     // Combine the main prompt with error prevention instructions and user description
-    const des =
-      Constants.PROMPT +
-      ERROR_PREVENTION_PROMPT +
-      description +
-      "\n\n" +
-      (options || "");
-
+    
+      const des =
+        Constants.PROMPTFORNEXTJS +
+        Constants.ERROR_PREVENTION_PROMPTFORNEXTJS +
+        description +
+        "\n\n" +
+        (options || "");
+    
+   
+    //   des =
+    //     Constants.PROMPTFORREACT +
+    //     Constants.ERROR_PREVENTION_PROMPTFORREACT +
+    //     description +
+    //     "\n\n" +
+    //     (options || "");
+    // }
     // Check if user has enough credits
     const user = await db
       .select()

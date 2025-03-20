@@ -8,7 +8,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
 // Dynamically import heavy components
 const AppHeader = dynamic(() => import("./_components/AppHeader"), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="h-16 bg-white/80 backdrop-blur-sm border-b" />
 });
 
